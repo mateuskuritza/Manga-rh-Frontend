@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import IDetailsCollaborator from "../../interfaces/detailsCollaborator";
+import IDetailsCollaborator from "../../interfaces/IDetailsCollaborator";
 import InfosCard from "./InfosCard";
 
 export default function ValidatePage() {
