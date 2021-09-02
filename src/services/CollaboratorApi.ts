@@ -4,12 +4,14 @@ import IDetailsCollaborator from "../interfaces/IDetailsCollaborator";
 import api from "./api";
 
 export default class CollaboratorApi {
-    getAll(): Promise<ICollaborator[]>{
-        return api.get("/collaborator");
+    async getAll(): Promise<ICollaborator[]>{
+        const collaborators = await api.get("/collaborator");
+        return collaborators.data;
     }
 
-    getOne(id: number): Promise<IDetailsCollaborator>{
-        return api.get("/collaborator/" + id);
+    async getOne(id: number): Promise<IDetailsCollaborator>{
+        const collaborator = await api.get("/collaborator/" + id);
+        return collaborator.data;
     }
 
     create(body: INewCollaborator){

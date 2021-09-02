@@ -79,7 +79,7 @@ export default function Form({ selectOptions }: { selectOptions: { value: number
             knowledges: knowledges.knowledges
         }
 
-        api.collaborators.create(collaborator).then(() => setSucess(true)).catch(e => setFail(true));
+        api.collaborators.create(collaborator).then(() => setSucess(true)).catch(() => setFail(true));
     }
 
     function validateInfos() {
