@@ -2,8 +2,8 @@ import * as React from 'react';
 import { DataGrid, GridCellParams, GridColDef } from '@material-ui/data-grid';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core';
-import { purple } from '@material-ui/core/colors';
 import { useHistory } from 'react-router-dom';
+import ICollaborator from '../../interfaces/ICollaborator';
 
 const columns: GridColDef[] = [
     {
@@ -20,7 +20,7 @@ const columns: GridColDef[] = [
         editable: true,
     },
     {
-        field: 'situation',
+        field: 'valid',
         headerName: 'Situação',
         type: 'boolean',
         width: 150,
@@ -47,26 +47,14 @@ const useStyles = makeStyles({
         }
     },
 });
-// { data }: { data: { id: number, name: string, created_at: Date, situation: boolean }[] }
-const rows = [
-    { id: 1, name: 'Snow', created_at: 35, situation: true },
-    { id: 2, name: 'Lannister', created_at: 42, situation: true },
-    { id: 3, name: 'Lannister', created_at: 45, situation: true },
-    { id: 4, name: 'Stark', created_at: 16, situation: true },
-    { id: 5, name: 'Targaryen', created_at: null, situation: true },
-    { id: 6, name: 'Melisandre', created_at: 150, situation: null },
-    { id: 7, name: 'Clifford', created_at: 44, situation: false },
-    { id: 8, name: 'Frances', created_at: 36, situation: true },
-    { id: 9, name: 'Roxie', created_at: 65, situation: true },
-];
 
-export default function RegistersTable() {
+export default function RegistersTable({ data }: { data: ICollaborator[] }) {
     const classes = useStyles();
     const history = useHistory();
     return (
         <div className={classes.root} style={{ height: 500 }}>
             <DataGrid
-                rows={rows}
+                rows={data}
                 columns={columns}
                 pageSize={7}
                 disableSelectionOnClick

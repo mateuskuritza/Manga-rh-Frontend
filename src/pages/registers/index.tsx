@@ -1,11 +1,32 @@
+import dayjs from "dayjs";
+import { useState } from "react";
+import { useEffect } from "react";
 import styled from "styled-components";
+import useApi from "../../hooks/useApi";
+import ICollaborator from "../../interfaces/ICollaborator";
 import RegistersTable from "./RegistersTable";
 
 export default function RegistersPage() {
+
+    const [collaborators, setCollaborators] = useState<ICollaborator[]>([]);
+
+    const api = useApi();
+
+    useEffect(() => {
+        api.collaborators.getAll().then(r => setCollaborators(formatCollaborators(r)));
+    }, [])
+
+    function formatCollaborators(r: ICollaborator[]) {
+        return r.map(collaborator => {
+            collaborator.created_at = dayjs(collaborator.created_at).locale('br').format('YYYY-MM-DD');
+            return collaborator
+        })
+    }
+
     return (
         <Container>
             <h2>Registros</h2>
-            <RegistersTable />
+            <RegistersTable data={collaborators} />
         </Container>
     )
 }
