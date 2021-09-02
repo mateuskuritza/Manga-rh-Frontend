@@ -1,11 +1,44 @@
+import { useEffect } from "react";
+import { useState } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import Form from "../../components/Form";
+import Form from "./Form";
+import useApi from "../../hooks/useApi";
+import IKnowledge from "../../interfaces/IKnowledge";
+
+interface option {
+    label: string;
+    value: number;
+}
 
 export default function RegisterPage() {
+
+    const [knowledges, setKnowledges] = useState<IKnowledge[]>([]);
+    const [selectOptions, setSelectOptions] = useState<option[]>([]);
+    const { collaboratorName } = useParams<{ collaboratorName: string }>();
+
+    const api = useApi();
+
+    useEffect(() => {
+        api.knowledges.getAll().then(r => setKnowledges(r));
+    }, []);
+
+    function transformData(r: IKnowledge[]) {
+        return r.map(knowledge => {
+            return { label: knowledge.name, value: knowledge.id }
+        });
+    }
+
+    useEffect(() => {
+        const options = transformData(knowledges);
+        setSelectOptions(options);
+    }, [knowledges])
+
     return (
         <Container>
             <h2>Registro de colaborador</h2>
-            <Form selectOptions={[{ label: "NodeJS", value: 1 }, { label: "ReactJS", value: 2 }, { label: "PHP", value: 3 }, { label: "Ruby", value: 4 }]} />
+            <h2>Bem vindo {collaboratorName}!</h2>
+            <Form selectOptions={selectOptions} />
         </Container>
     )
 }
@@ -25,5 +58,6 @@ const Container = styled.div`
 
   h2{
       font-size: 1.3em;
+      margin-bottom: 5px;
   }
 `;

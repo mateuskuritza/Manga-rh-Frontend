@@ -1,11 +1,12 @@
 import { Button, Collapse, FormHelperText, IconButton, MenuItem, TextField } from "@material-ui/core";
 import { useState } from "react";
-import CpfMaskInput from "./CpfMaskInput";
-import PhoneMaskInput from "./PhoneMaskInput";
+import CpfMaskInput from "../../components/CpfMaskInput";
+import PhoneMaskInput from "../../components/PhoneMaskInput";
 import styled from "styled-components";
 import SaveIcon from '@material-ui/icons/Save';
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
+import useApi from "../../hooks/useApi";
 
 export default function Form({ selectOptions }: { selectOptions: { value: number, label: string }[] }) {
 
@@ -28,7 +29,10 @@ export default function Form({ selectOptions }: { selectOptions: { value: number
         knowledges: []
     });
 
-    const [open, setOpen] = useState(false);
+    const api = useApi();
+
+    const [sucess, setSucess] = useState(false);
+    const [fail, setFail] = useState(false);
 
     function handleFieldChange(event: any) {
         event.persist();
@@ -64,6 +68,8 @@ export default function Form({ selectOptions }: { selectOptions: { value: number
 
     function sendForm() {
         if (!validateInfos()) return
+        setSucess(false);
+        setFail(false);
 
         const collaborator = {
             name: values.name,
@@ -73,8 +79,7 @@ export default function Form({ selectOptions }: { selectOptions: { value: number
             knowledges: knowledges.knowledges
         }
 
-        // on sucess setOpen(true)
-        setOpen(true);
+        api.collaborators.create(collaborator).then(() => setSucess(true)).catch(e => setFail(true));
     }
 
     function validateInfos() {
@@ -183,7 +188,7 @@ export default function Form({ selectOptions }: { selectOptions: { value: number
             >
                 Send
             </Button>
-            <Collapse in={open}>
+            <Collapse in={sucess}>
                 <Alert
                     action={
                         <IconButton
@@ -191,7 +196,7 @@ export default function Form({ selectOptions }: { selectOptions: { value: number
                             color="inherit"
                             size="small"
                             onClick={() => {
-                                setOpen(false);
+                                setSucess(false);
                             }}
                         >
                             <CloseIcon fontSize="inherit" />
@@ -199,6 +204,26 @@ export default function Form({ selectOptions }: { selectOptions: { value: number
                     }
                 >
                     Enviado com sucesso!
+                </Alert>
+            </Collapse>
+            <Collapse in={fail}>
+                <Alert
+                    color="warning"
+                    severity="error"
+                    action={
+                        <IconButton
+                            aria-label="close"
+                            color="secondary"
+                            size="small"
+                            onClick={() => {
+                                setFail(false);
+                            }}
+                        >
+                            <CloseIcon fontSize="inherit" />
+                        </IconButton>
+                    }
+                >
+                    CPF já cadastrado!
                 </Alert>
             </Collapse>
         </FormContainer>
@@ -228,5 +253,9 @@ const FormContainer = styled.form`
 
     > div:last-child{
         width: 80%;
+    }
+
+    .MuiSelect-iconOutlined{
+        right: -45%;
     }
 `;
