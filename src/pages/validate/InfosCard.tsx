@@ -4,9 +4,14 @@ import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
 import IDetailsCollaborator from '../../interfaces/IDetailsCollaborator';
 import dayjs from 'dayjs';
+import useApi from '../../hooks/useApi';
+import { Button, Collapse, IconButton } from "@material-ui/core";
+import Alert from '@material-ui/lab/Alert';
+import CloseIcon from '@material-ui/icons/Close';
+import { useState } from 'react';
+
 
 const useStyles = makeStyles({
     root: {
@@ -15,15 +20,27 @@ const useStyles = makeStyles({
     },
 });
 
-export default function InfosCard({ data }: { data: IDetailsCollaborator | undefined }) {
+export default function InfosCard({ data }: { data: IDetailsCollaborator }) {
     const classes = useStyles();
 
+    const api = useApi();
+
+    const [sucess, setSucess] = useState(false);
+    const [fail, setFail] = useState(false);
+
     function validate() {
-        // send validate to API
+        resetAlert();
+        api.collaborators.validate(data.id).then(() => setSucess(true)).catch(() => setFail(true));
     }
 
     function unValidate() {
-        // send unvalidate to API
+        resetAlert();
+        api.collaborators.unvalidate(data.id).then(() => setSucess(true)).catch(() => setFail(true));
+    }
+
+    function resetAlert() {
+        setSucess(false);
+        setFail(false);
     }
 
     return (
@@ -64,6 +81,44 @@ export default function InfosCard({ data }: { data: IDetailsCollaborator | undef
                         Não validar
                     </Button>
                 </CardActions>
+                <Collapse in={sucess}>
+                    <Alert
+                        action={
+                            <IconButton
+                                aria-label="close"
+                                color="inherit"
+                                size="small"
+                                onClick={() => {
+                                    setSucess(false);
+                                }}
+                            >
+                                <CloseIcon fontSize="inherit" />
+                            </IconButton>
+                        }
+                    >
+                        Validado com sucesso!
+                    </Alert>
+                </Collapse>
+                <Collapse in={fail}>
+                    <Alert
+                        color="warning"
+                        severity="error"
+                        action={
+                            <IconButton
+                                aria-label="close"
+                                color="secondary"
+                                size="small"
+                                onClick={() => {
+                                    setFail(false);
+                                }}
+                            >
+                                <CloseIcon fontSize="inherit" />
+                            </IconButton>
+                        }
+                    >
+                        Erro ao validar!
+                    </Alert>
+                </Collapse>
             </Card >
         </Container>
     );

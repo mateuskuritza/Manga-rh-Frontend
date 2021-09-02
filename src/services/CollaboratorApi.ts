@@ -9,8 +9,8 @@ export default class CollaboratorApi {
         return collaborators.data;
     }
 
-    async getOne(id: number): Promise<IDetailsCollaborator>{
-        const collaborator = await api.get("/collaborator/" + id);
+    async getOne(name: string): Promise<IDetailsCollaborator>{
+        const collaborator = await api.get("/collaborator/" + name);
         return collaborator.data;
     }
 
