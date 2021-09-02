@@ -137,7 +137,8 @@ export default function Form({ selectOptions }: { selectOptions: { value: number
     }
 
     function validPhone() {
-        return (values.phone.trim().length === 15);
+        const phoneLength = values.phone.trim().length;
+        return (phoneLength === 15 || phoneLength === 0);
     }
 
     return (
@@ -152,7 +153,7 @@ export default function Form({ selectOptions }: { selectOptions: { value: number
             </div>
             <div>
                 <PhoneMaskInput error={errors.phone} value={values.phone} handleInputChange={handleInputChange} />
-                {errors.phone && <FormHelperText >(XX) XXXXX-XXXX</FormHelperText>}
+                {errors.phone && <FormHelperText >(XX) XXXXX-XXXX (opcional)</FormHelperText>}
             </div>
             <div>
                 <CpfMaskInput error={errors.cpf} value={values.cpf} handleInputChange={handleInputChange} />
