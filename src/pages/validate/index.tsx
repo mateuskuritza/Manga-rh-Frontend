@@ -2,45 +2,30 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
+import useApi from "../../hooks/useApi";
 import IDetailsCollaborator from "../../interfaces/IDetailsCollaborator";
 import InfosCard from "./InfosCard";
+import { useHistory } from 'react-router-dom';
 
 export default function ValidatePage() {
 
     const [data, setData] = useState<IDetailsCollaborator>();
     const { collaboratorName } = useParams<{ collaboratorName: string }>();
 
+    const api = useApi();
+
+    const history = useHistory();
+
     useEffect(() => {
-        // GET data API /collaboratorName
-        setData({
-            "id": "4fa1753c-5bfb-4c3a-bb2f-b33898a7b203",
-            "name": "Jorginho",
-            "cpf": "419.561.229-96",
-            "email": "joao@gmail.com",
-            "phone": "(42) 99904-3116",
-            "valid": false,
-            "update_at": "2021-08-31T20:27:02.509Z",
-            "created_at": "2021-08-31T20:21:32.078Z",
-            "knowledges": [
-                {
-                    "id": 1,
-                    "name": "Git"
-                },
-                {
-                    "id": 3,
-                    "name": "NodeJS"
-                },
-                {
-                    "id": 5,
-                    "name": "DevOps"
-                }
-            ]
-        })
+        api.collaborators.getOne(collaboratorName).then((r) => setData(r));
     }, [])
+
+    if (!data) return <h1>Loading...</h1>
 
     return (
         <Container>
-            <h2>Validar colaborador</h2>
+            <h2>Validar colaborador </h2>
+            <p onClick={() => history.goBack()}>Voltar</p>
             <InfosCard data={data} />
         </Container>
     )
@@ -60,6 +45,14 @@ const Container = styled.div`
 
     h2{
         font-size: 1.3em;
-        margin-bottom: 20px;
+    }
+
+    > p{
+        margin: 20px 0;
+        font-size: 1.1em;
+        cursor: pointer;
+        :hover{
+            transform: scale(1.1);
+        }
     }
 `;
